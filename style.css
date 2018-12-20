@@ -1,0 +1,29 @@
+body {
+ background-color: #373737; 
+ color: #f5deb3;
+}
+
+.ghost-button {
+	color: #05040f;
+	background: #fff0;
+	border: 2px solid #05040f;
+	font-size: 17px;
+	padding: 7px 12px;
+	font-weight: 550;
+	margin: 8px;
+	display: inline-block;
+	text-decoration: none;
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+	min-width: 120px;
+	position:fixed;
+	transition: all .2s ease-in-out;
+}
+
+.ghost-button:hover {
+	color: #1e1b36;
+	border: 2px solid #1e1b36;
+}
+
+.ghost-button:active {
+	transform: scale(1.1);
+}
