@@ -31,7 +31,7 @@ scene.add( lights[ 2 ] );
 
 var geometry = new THREE.SphereGeometry(2, 64, 64);
 //var material = new THREE.MeshPhongMaterial( { color: 0xf5deb3, side: THREE.DoubleSide, flatShading: true } );
-var texture = new THREE.TextureLoader().load( "../img/BlackMarble.jpg" );
+var texture = new THREE.TextureLoader().load( "img/BlackMarble.jpg" );
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
 texture.repeat.set( 1, 1 );
