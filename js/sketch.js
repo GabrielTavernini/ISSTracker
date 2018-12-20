@@ -165,7 +165,11 @@ var animate = function () {
 	requestAnimationFrame( animate );
 	
 	if(count % 100 == 0 && finishedLoading){
-		loadAndMove();
+		try{
+			loadAndMove();
+		} catch {
+			alert("Site Mixed Content Error - The Browser is blocking the request to the API because it is on HTTP")
+		}
 		count = 0;
 	}	
 
