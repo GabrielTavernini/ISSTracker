@@ -53,7 +53,7 @@ scene.add( cube );
 //3ds files dont store normal maps
 var moon = new THREE.Object3D();
 var loader = new THREE.TDSLoader( );
-loader.load( '../model/isscombined.3ds', function ( object ) {
+loader.load( 'model/isscombined.3ds', function ( object ) {
 	object.traverse( function ( child ) {
 		if ( child instanceof THREE.Mesh ) {
 			if(child.name.substring(0,9) == "polySurfa"){
