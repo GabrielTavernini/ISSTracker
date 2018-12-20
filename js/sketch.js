@@ -135,26 +135,16 @@ var loadAndMove = function(){
 		moon.position.y = y;
 		moon.position.z = z;
 		
-		// var dir = new THREE.Vector3();
-		// dir.subVectors( new THREE.Vector3(x, y, z), new THREE.Vector3(0, 0, 0) ).normalize();
 		if(track){
 			camera.position.x = x * 2;
 			camera.position.z = z * 2;
 			camera.position.y = y * 2;
 		}
 		
-		//controls.target = dir;
-		
 		console.log("P(Long): " + myJson.iss_position.longitude + " : " + phi + "\nT(Lat): " +  myJson.iss_position.latitude + " : " + theta);
-		//var sunPos = calculateSunPosition();
-		//console.log(sunPos);
-		// var x = Math.cos(sunPos.phi* Math.PI / 180) * Math.cos(sunPos.theta* Math.PI / 180) * 2;
-		// var z = Math.cos(sunPos.phi* Math.PI / 180) * Math.sin(sunPos.theta* Math.PI / 180) * 2;
-		// var y = Math.sin(sunPos.phi* Math.PI / 180) * 2;
-		// sun.position.x = x;
-		// sun.position.y = y;
-		// sun.position.z = z;
-	});
+	}).catch(e => {
+		alert("Site Mixed Content Error - The Browser is blocking the request to the API because it is on HTTP")
+	});	
 }
 
 
@@ -165,11 +155,7 @@ var animate = function () {
 	requestAnimationFrame( animate );
 	
 	if(count % 100 == 0 && finishedLoading){
-		try{
-			loadAndMove();
-		} catch(e){
-			alert("Site Mixed Content Error - The Browser is blocking the request to the API because it is on HTTP")
-		}
+		loadAndMove();
 		count = 0;
 	}	
 
