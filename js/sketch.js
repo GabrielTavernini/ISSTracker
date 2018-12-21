@@ -21,6 +21,9 @@ fetch('https://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaS
 	
 	satrec = satellite.twoline2satrec(tleLine1, tleLine2);
 	tleAcquired = true;
+}).catch(() => {
+	alert("Remember to enable CORS for development");
+	tleAcquired = false;
 });
 
 var scene = new THREE.Scene();
@@ -136,7 +139,7 @@ var calculateSunPosition = function(){
 
 
 var loadAndMove = function(){
-	if(!tleAcquired && !finishedLoading)
+	if(!tleAcquired || !finishedLoading)
 		return;
 
 	var positionEci = satellite.propagate(satrec, new Date()).position;
