@@ -1,9 +1,30 @@
 
 var finishedLoading = false;
+var tleAcquired = false;
 var track = true;
 
+// Initialize a satellite record
+var satrec;
+fetch('https://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaSSOP/orbit/ISS/SVPOST.html')
+.then(function(response) {
+	return response.text();	
+})
+.then(function(data) {
+	//console.log(data);
+	data = data.split("TWO LINE MEAN ELEMENT SET")[1];
+	console.log(data.substring(8, 11));
+	console.log(data.substring(16, 85));
+	console.log(data.substring(90, 160));
+
+	var tleLine1 = data.substring(16, 85);
+	var tleLine2 = data.substring(90, 160);
+	
+	satrec = satellite.twoline2satrec(tleLine1, tleLine2);
+	tleAcquired = true;
+});
+
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+var camera = new THREE.PerspectiveCamera( 75, (window.innerWidth - 20)/(window.innerHeight - 20), 0.1, 1000 );
 var controls = new THREE.OrbitControls( camera );
 controls.enableKeys = false;
 controls.addEventListener( 'start', () => {track = false;} );
@@ -35,8 +56,8 @@ var texture = new THREE.TextureLoader().load( "img/BlackMarble.jpg" );
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
 texture.repeat.set( 1, 1 );
-var material = new THREE.MeshBasicMaterial( { map: texture } );
 
+var material = new THREE.MeshBasicMaterial( { map: texture } );
 var cube = new THREE.Mesh( geometry, material );
 scene.add( cube );
 
@@ -44,8 +65,6 @@ scene.add( cube );
 // var material = new THREE.MeshPhongMaterial( { color: 0xffff00, side: THREE.DoubleSide, flatShading: true } );
 // var sun = new THREE.Mesh( geometry, material );
 // scene.add( sun );
-
-
 
 
 
@@ -60,9 +79,6 @@ loader.load( 'model/isscombined.3ds', function ( object ) {
 				child.scale.set(0.005, 0.005, 0.005);
 				console.log(child.name);
 				child.material = new THREE.MeshBasicMaterial( { color: 0xFFFFFF } );
-				child.rotation.x = -0.5;
-				child.rotation.y = -0.5;
-				child.rotation.z = 0;
 				moon.add(child.clone());
 			}
 			
@@ -120,41 +136,57 @@ var calculateSunPosition = function(){
 
 
 var loadAndMove = function(){
-	fetch('http://api.open-notify.org/iss-now.json')
-	.then(function(response) {
-		return response.json();
-	})
-	.then(function(myJson) {
-		phi = myJson.iss_position.latitude * Math.PI / 180; //° North
-		theta = myJson.iss_position.longitude * Math.PI / -180;
-		
-		var x = Math.cos(phi) * Math.cos(theta) * rho;
-		var z = Math.cos(phi) * Math.sin(theta) * rho;
-		var y = Math.sin(phi) * rho;
-		moon.position.x = x;
-		moon.position.y = y;
-		moon.position.z = z;
-		
-		if(track){
-			camera.position.x = x * 2;
-			camera.position.z = z * 2;
-			camera.position.y = y * 2;
-		}
-		
-		console.log("P(Long): " + myJson.iss_position.longitude + " : " + phi + "\nT(Lat): " +  myJson.iss_position.latitude + " : " + theta);
-	}).catch(e => {
-		alert("Site Mixed Content Error - The Browser is blocking the request to the API because it is on HTTP")
-	});	
+	if(!tleAcquired && !finishedLoading)
+		return;
+
+	var positionEci = satellite.propagate(satrec, new Date()).position;
+	var gmst = satellite.gstime(new Date());
+
+	var positionGd    = satellite.eciToGeodetic(positionEci, gmst);
+	var longitude = positionGd.longitude;
+	var latitude  = positionGd.latitude;
+	var height    = positionGd.height;
+	
+	phi = latitude;// * Math.PI / 180; //° North
+	theta = -longitude;// * Math.PI / -180;
+	
+	var x = Math.cos(phi) * Math.cos(theta) * rho;
+	var z = Math.cos(phi) * Math.sin(theta) * rho;
+	var y = Math.sin(phi) * rho;
+
+	moon.position.x = x;
+	moon.position.y = y;
+	moon.position.z = z;
+
+	moon.rotation.z = latitude;
+	moon.rotation.y = longitude;
+
+	if(track){
+		camera.position.x = x * 2;
+		camera.position.z = z * 2;
+		camera.position.y = y * 2;
+	}
+	
+	//console.log(myJson.iss_position.latitude * Math.PI / 180,  myJson.iss_position.longitude * Math.PI / -180);
+	console.log(phi, theta)
+	//console.log("P(Long): " + myJson.iss_position.longitude + " : " + phi + "\nT(Lat): " +  myJson.iss_position.latitude + " : " + theta);
 }
 
 
 
+window.addEventListener( 'resize', onWindowResize, false );
+function onWindowResize(){
+	camera.aspect = (window.innerWidth - 20 )/ (window.innerHeight - 20);
+	camera.updateProjectionMatrix();
+	
+    renderer.setSize( window.innerWidth - 20, window.innerHeight - 20);
+}
 
 
 var animate = function () {
 	requestAnimationFrame( animate );
 	
-	if(count % 100 == 0 && finishedLoading){
+	if(count % 50 == 0 && finishedLoading){
 		loadAndMove();
 		count = 0;
 	}	
