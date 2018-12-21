@@ -5,7 +5,7 @@ var track = true;
 
 // Initialize a satellite record
 var satrec;
-fetch('https://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaSSOP/orbit/ISS/SVPOST.html')
+fetch('https://cors.io/?https://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaSSOP/orbit/ISS/SVPOST.html', {mode: "cors"})
 .then(function(response) {
 	return response.text();	
 })
@@ -21,9 +21,6 @@ fetch('https://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaS
 	
 	satrec = satellite.twoline2satrec(tleLine1, tleLine2);
 	tleAcquired = true;
-}).catch(() => {
-	alert("Remember to enable CORS for development");
-	tleAcquired = false;
 });
 
 var scene = new THREE.Scene();
