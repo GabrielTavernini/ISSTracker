@@ -7,29 +7,42 @@
 	<link href="./style.css" rel="stylesheet">
 	<link rel="shortcut icon" href="img/favicon.ico">
 
-    <title>ISS Tracker</title>
+	<title>ISS Tracker</title>
   </head>
   <body>
     <noscript>
       You need to enable JavaScript to run this app.
 	</noscript>
 
+	
 	<button class="ghost-button" onclick="trackISS()">Track ISS</button>
+	<button class="ghost-button" style="margin-left: 150px" onclick="toggleSun()">Toggle Sun</button>
+	<!-- <p class="speed"></p> -->
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js"></script>
 	<script src="js/OrbitControls.js"></script>
 	<script src="js/TDSloader.js"></script>
 	<script src="js/satellite.min.js"></script>
 	<script src="js/sketch.js"></script>
+
 	<script>
-		function trackISS(){
-			track = true;
-			loadAndMove();
-			controls.update();
-			renderer.render( scene, camera );
-		}
+			function trackISS(){
+				track = true;
+				loadAndMove();
+				controls.update();
+				renderer.render( scene, camera );
+			}
+	
+			function toggleSun(){
+				sun = !sun;
+				if(sun){
+					cube.material = dayMaterial;
+					cube.material.needsUpdate = true;
+				} else {
+					cube.material = noDayMaterial;
+					cube.material.needsUpdate = true;
+				}
+			}
 	</script>
-
-
   </body>
 </html>
