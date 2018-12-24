@@ -188,6 +188,7 @@ var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, (window.innerWidth - 20)/(window.innerHeight - 20), 0.1, 1000 );
 var controls = new THREE.OrbitControls( camera );
 controls.enableKeys = false;
+controls.noPan = true;
 controls.addEventListener( 'start', () => {track = false;} );
 //controls.enableDamping = true;
 
