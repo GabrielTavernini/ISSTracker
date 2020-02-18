@@ -166,7 +166,12 @@ var sun = false;
 
 // Initialize a satellite record
 var satrec;
-fetch('https://cors.io/?https://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaSSOP/orbit/ISS/SVPOST.html', { mode: "cors" })
+fetch('https://cors-anywhere.herokuapp.com/https://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaSSOP/orbit/ISS/SVPOST.html', { 
+		mode: "cors", 
+		headers: {
+			'origin': 'https://gabrieltavernini.github.io/ISSTracker/'
+		},
+	})
 	.then(function (response) {
 		return response.text();
 	})
